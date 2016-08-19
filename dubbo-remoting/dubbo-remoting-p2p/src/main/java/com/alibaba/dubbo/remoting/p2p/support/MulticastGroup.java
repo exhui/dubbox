@@ -15,36 +15,37 @@
  */
 package com.alibaba.dubbo.remoting.p2p.support;
 
+import com.alibaba.dubbo.common.URL;
+import com.alibaba.dubbo.common.utils.NetUtils;
+import com.alibaba.dubbo.common.utils.StringUtils;
+import com.alibaba.dubbo.remoting.ChannelHandler;
+import com.alibaba.dubbo.remoting.RemotingException;
+import com.alibaba.dubbo.remoting.p2p.Peer;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
 
-import com.alibaba.dubbo.common.URL;
-import com.alibaba.dubbo.common.utils.StringUtils;
-import com.alibaba.dubbo.remoting.ChannelHandler;
-import com.alibaba.dubbo.remoting.RemotingException;
-import com.alibaba.dubbo.remoting.p2p.Peer;
-
 /**
  * MulticastGroup
- * 
+ *
  * @author william.liangf
  */
 public class MulticastGroup extends AbstractGroup {
-    
+
     private static final String JOIN = "join";
-    
+
     private static final String LEAVE = "leave";
 
     private InetAddress mutilcastAddress;
-    
+
     private MulticastSocket mutilcastSocket;
 
     public MulticastGroup(URL url) {
         super(url);
-        if (! isMulticastAddress(url.getHost())) {
+        if (! isMulticastAddress(url.getHost()) && !NetUtils.isMulticastAddress(url.getHost())) {
             throw new IllegalArgumentException("Invalid multicast address " + url.getHost() + ", scope: 224.0.0.0 - 239.255.255.255");
         }
         try {
@@ -72,7 +73,7 @@ public class MulticastGroup extends AbstractGroup {
             throw new IllegalStateException(e.getMessage(), e);
         }
     }
-    
+
     private static boolean isMulticastAddress(String ip) {
         int i = ip.indexOf('.');
         if (i > 0) {
@@ -84,7 +85,7 @@ public class MulticastGroup extends AbstractGroup {
         }
         return false;
     }
-    
+
     private void send(String msg) throws RemotingException {
         DatagramPacket hi = new DatagramPacket(msg.getBytes(), msg.length(), mutilcastAddress, mutilcastSocket.getLocalPort());
         try {
@@ -103,7 +104,7 @@ public class MulticastGroup extends AbstractGroup {
             disconnect(URL.valueOf(url));
         }
     }
-    
+
     @Override
     public Peer join(URL url, ChannelHandler handler) throws RemotingException {
         Peer peer = super.join(url, handler);
