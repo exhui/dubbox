@@ -224,8 +224,9 @@ public class RedisRegistry extends FailbackRegistry {
         boolean cycleIsFinished = false;
         while (!cycleIsFinished) {
             ScanResult<String> scanResult = jedis.scan(cur, scanParams);
+            cur = scanResult.getStringCursor();
             if (CollectionUtils.isNotEmpty(scanResult.getResult())) keys.addAll(scanResult.getResult());
-            if (scanResult.getStringCursor().equals("0")) cycleIsFinished = true;
+            if (cur.equals("0")) cycleIsFinished = true;
         }
         return keys;
     }
