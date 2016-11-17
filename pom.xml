@@ -50,7 +50,7 @@
 		<module>dubbo-config</module>
 		<module>dubbo</module>
 		<module>dubbo-simple</module>
-		<module>dubbo-admin</module>
+		<!--<module>dubbo-admin</module>-->
 		<module>dubbo-demo</module>
 		<module>hessian-lite</module>
 		<!--<module>dubbo-tool/dubbo-demo-lite-archetype</module>-->
@@ -468,6 +468,7 @@
 			<artifactId>jmockit</artifactId>
 		</dependency>
 	</dependencies>
+
 	<build>
 		<plugins>
 			<plugin>
